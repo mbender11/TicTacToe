@@ -13,6 +13,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var winnerLabel: UILabel!
     @IBOutlet weak var playAgainButton: UIButton!
     var gameOver = false
+    var turnCounter = 0
     
     // currentPlayer 1 = O, currentPlayer 2 = M
     var currentPlayer = 1
@@ -24,6 +25,7 @@ class ViewController: UIViewController {
     
     @IBAction func buttonPressed(_ sender: AnyObject) {
         
+        turnCounter += 1
         var currentPosition = sender.tag - 1 // tags from 1-9, but array positions from 0-8. -1 adjusts accordingly
         
         // only allow a player to fill in a spot if it is empty
@@ -56,6 +58,21 @@ class ViewController: UIViewController {
                         self.playAgainButton.center = CGPoint(x: self.playAgainButton.center.x + 500, y: self.playAgainButton.center.y)
                     })
                 }
+
+            }
+            
+            // this handles cat's games. If there is no winner after 9 turns, the board is full and must give user the option to play again
+            if turnCounter == 9 && !gameOver {
+                gameOver = true
+                winnerLabel.isHidden = false
+                playAgainButton.isHidden = false
+                
+                winnerLabel.text = "Cat's game!"
+                
+                UIView.animate(withDuration: 1, animations: {
+                    self.winnerLabel.center = CGPoint(x: self.winnerLabel.center.x + 500, y: self.winnerLabel.center.y)
+                    self.playAgainButton.center = CGPoint(x: self.playAgainButton.center.x + 500, y: self.playAgainButton.center.y)
+                })
             }
             
         }
@@ -72,6 +89,7 @@ class ViewController: UIViewController {
         gameState = [0,0,0,0,0,0,0,0,0]
         gameOver = false
         currentPlayer = 1
+        turnCounter = 0
         
         // loop through all 9 spaces on board and set image to nil for each space based on their tag (1-9)
         for i in 1...9 {
